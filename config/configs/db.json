@@ -1,0 +1,56 @@
+{
+    "user": {
+        "doc": "mysql db username",
+        "format": "String",
+        "default": "webapp",
+        "env": "MYSQL_DB_USER"
+    },
+    "password": {
+        "doc":"mysql db password",
+        "format": "String",
+        "default": "webapp",
+        "env": "MYSQL_DB_PASSWORD"
+    },
+    "host": {
+        "doc": "mysql db host",
+        "format": "String",
+        "default": "localhost",
+        "env": "MYSQL_DB_HOST"
+    },
+    "dbName": {
+        "doc": "mysql db name",
+        "format": "String",
+        "default": "csye6225",
+        "env": "MYSQL_DB_NAME"
+    },
+    "waitForConnections": {
+        "doc":"mysql wait for connections",
+        "format": "Boolean",
+        "default": true,
+        "env": "MYSQL_WAIT_FOR_CONNECTIONS"
+    },
+    "connectionLimit": {
+        "doc":"mysql connection limit",
+        "format": "Number",
+        "default": 10,
+        "env": "MYSQL_CONNECTION_LIMIT"
+    },
+    "maxIdle": {
+        "doc":"mysql max idle",
+        "format": "Number",
+        "default": 10,
+        "env": "MYSQL_MAX_IDLE"
+    },
+    "idleTimeout": {
+        "doc":"mysql idle timeout",
+        "format": "Number",
+        "default": 60000,
+        "env": "MYSQL_IDLE_TIMEOUT" 
+    },
+    "queueLimit": {
+        "doc":"mysql queue limit",
+        "format": "Number",
+        "default": 0,
+        "env": "MYSQL_QUEUE_LIMIT" 
+    }
+}
