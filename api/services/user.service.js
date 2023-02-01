@@ -1,6 +1,7 @@
 import httpStatus from 'http-status';
+import validator from 'validator';
 import _ from 'lodash';
-// import UserModel from '../models/user.model.js';
+import UserModel from '../models/user.model.js';
 // import AppError from '../utils/AppError.js';
 import bcrypt from 'bcrypt';
 /**
@@ -8,8 +9,20 @@ import bcrypt from 'bcrypt';
  * @param {Object} userInfo: user info to be saved to create user
  */
 const create = async (userInfo) => {
- return {};
-};
+  const columns = Object.keys(userInfo);
+  const createAllowedColumns = ['first_name', 'last_name', 'password', 'username'];
+  if (!_.difference(columns, createAllowedColumns).length && _.intersection(columns, createAllowedColumns).length === createAllowedColumns.length) {
+    userInfo.password = await bcrypt.hash(userInfo.password, 10);
+    await UserModel.insertOne(userInfo);
+    delete userInfo.password;
+    return userInfo;
+  } else {
+    throw {
+      message: "Bad Request",
+      code: 400
+    };
+  }
+}
 
 /**
  * Fetch user
@@ -17,7 +30,11 @@ const create = async (userInfo) => {
  * returns user info
  */
 const fetchById = async (_id) => {
-  return {};
+  // if (!validator.isEmail(_id)) throw new Error("Invalid Email Format, Please Check Your Email!");
+  const dbRes = await UserModel.findOne(_id);
+  console.log(new Date(dbRes.account_updated));
+  delete dbRes.password;
+  return dbRes;
 };
 
 /**
@@ -27,7 +44,14 @@ const fetchById = async (_id) => {
  * @return {Object} updatedUserInfo
  */
 const updateById = async (_id, userInfo) => {
-  return {}
+  const columns = Object.keys(userInfo);
+  const updateAllowedColumns = ['first_name', 'last_name', 'password'];
+  if (!_.difference(columns, updateAllowedColumns).length) {
+    if(_.has(userInfo, 'password')) userInfo.password = await bcrypt.hash(userInfo.password, 10);
+    await UserModel.updateOne(userInfo, _id);
+  } else {
+    throw { message: "Bad Request", code: 400 };
+  }
 };
 
 export default {

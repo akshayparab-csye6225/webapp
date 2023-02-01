@@ -6,10 +6,12 @@ import userController from '../controllers/user.controller.js';
 const router = express.Router();
 const path = '/v1/user';
 
+router.route('')
+  .post(userController.create);
 router.route('/:userId')
-    .get(userController.fetchById)
-    .post(userController.create)
-    .put(userController.updateById);
+  .get(userController.fetchById)
+  .put(userController.updateById);
+
 
 export {
   router,

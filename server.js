@@ -15,7 +15,7 @@ const initMySQLConn = async () => {
         host: dbConf.host,
         user: dbConf.user,
         password: dbConf.password,
-        database: dbConf.password,
+        database: dbConf.dbName,
         waitForConnections: dbConf.waitForConnections,
         connectionLimit: dbConf.connectionLimit,
         maxIdle: dbConf.maxIdle,
