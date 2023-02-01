@@ -17,8 +17,11 @@ const create = async (req, res) => {
       const dbResponse = await userService.create(userInfo);
       responseHandler(res, dbResponse);
     } catch(error){
-      let errorCode = error.code ? error.code : 500;
-      responseHandler(res, null, errorCode);
+      if(error.errno) return responseHandler(res, null, 400);
+      else {
+        let errorCode = error.ecode ? error.ecode : 500;
+        return responseHandler(res, null, errorCode);
+      }
     }  
   };
 

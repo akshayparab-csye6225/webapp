@@ -7,6 +7,12 @@ const findOne = async (_id) => {
     else return {};
 }
 
+const findOneByUsername = async (username) => {
+    const [rows] = await dbConn.query(`SELECT * FROM user WHERE username='${username}' LIMIT 1`);
+    if(rows.length) return rows[0];
+    else return {};
+}
+
 const insertOne = async (userInfo) => {
     await dbConn.query(`INSERT INTO user(first_name, last_name, password, username) VALUES ('${userInfo.first_name}', '${userInfo.last_name}', '${userInfo.password}', '${userInfo.username}')`);
 }
@@ -22,5 +28,6 @@ const updateOne = async (userInfo, _id) => {
 export default {
     findOne,
     insertOne,
-    updateOne
+    updateOne,
+    findOneByUsername
 }

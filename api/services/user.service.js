@@ -1,9 +1,8 @@
-import httpStatus from 'http-status';
-import validator from 'validator';
 import _ from 'lodash';
 import UserModel from '../models/user.model.js';
-// import AppError from '../utils/AppError.js';
 import bcrypt from 'bcrypt';
+
+import emailValidator from '../utils/emailValidator.js';
 /**
  * Create user
  * @param {Object} userInfo: user info to be saved to create user
@@ -12,14 +11,16 @@ const create = async (userInfo) => {
   const columns = Object.keys(userInfo);
   const createAllowedColumns = ['first_name', 'last_name', 'password', 'username'];
   if (!_.difference(columns, createAllowedColumns).length && _.intersection(columns, createAllowedColumns).length === createAllowedColumns.length) {
+    if (!emailValidator(userInfo.username)) throw {message: "Invalid Email Format, Please Check Your Email!", ecode: 400};
     userInfo.password = await bcrypt.hash(userInfo.password, 10);
     await UserModel.insertOne(userInfo);
-    delete userInfo.password;
-    return userInfo;
+    const dbRes = await UserModel.findOneByUsername(userInfo.username);
+    delete dbRes.password;
+    return dbRes;
   } else {
     throw {
       message: "Bad Request",
-      code: 400
+      ecode: 400
     };
   }
 }
@@ -30,9 +31,7 @@ const create = async (userInfo) => {
  * returns user info
  */
 const fetchById = async (_id) => {
-  // if (!validator.isEmail(_id)) throw new Error("Invalid Email Format, Please Check Your Email!");
   const dbRes = await UserModel.findOne(_id);
-  console.log(new Date(dbRes.account_updated));
   delete dbRes.password;
   return dbRes;
 };
@@ -50,12 +49,19 @@ const updateById = async (_id, userInfo) => {
     if(_.has(userInfo, 'password')) userInfo.password = await bcrypt.hash(userInfo.password, 10);
     await UserModel.updateOne(userInfo, _id);
   } else {
-    throw { message: "Bad Request", code: 400 };
+    throw { message: "Bad Request", ecode: 400 };
   }
 };
 
+const authenticateUser = async (userId, username, password) => {
+    const userInfo = await UserModel.findOne(userId);
+    if(userInfo.username !== username) return false;
+    return bcrypt.compare(password, userInfo.password);
+}
+ 
 export default {
   create,
   fetchById,
   updateById,
+  authenticateUser,
 };
