@@ -6,8 +6,16 @@ import responseHandler from '../utils/responseHandler.js';
 
 const fetchById = async (req, res) => {
   const _id = req.params.userId;
-  const userInfo = await userService.fetchById(_id);
-  responseHandler(res, userInfo);
+  try{
+    const userInfo = await userService.fetchById(_id);
+    responseHandler(res, userInfo);
+  } catch(error) {
+    if(error.errno) return responseHandler(res, null, 400);
+    else {
+      let errorCode = error.ecode ? error.ecode : 500;
+      return responseHandler(res, null, errorCode);
+    }
+  }
 };
 
 const create = async (req, res) => {
@@ -15,7 +23,7 @@ const create = async (req, res) => {
     if(_.isEmpty(userInfo)) return responseHandler(res, null, 204);
     try{
       const dbResponse = await userService.create(userInfo);
-      responseHandler(res, dbResponse);
+      responseHandler(res, dbResponse, 201);
     } catch(error){
       if(error.errno) return responseHandler(res, null, 400);
       else {
@@ -31,11 +39,13 @@ const updateById = async (req, res) => {
   if(_.isEmpty(userInfo)) return responseHandler(res, null, 204);
   try{
     await userService.updateById(_id, userInfo);
-    responseHandler(res, null, 200);
+    responseHandler(res, null, 204);
   } catch(error) {
-    console.log('error',error);
-    let errorCode = error.code ? error.code : 500;
-    responseHandler(res, null, errorCode);
+    if(error.errno) return responseHandler(res, null, 400);
+    else {
+      let errorCode = error.ecode ? error.ecode : 500;
+      return responseHandler(res, null, errorCode);
+    }
   }
 };
 
