@@ -1,9 +1,9 @@
 # webapp
-**Name**: Akshay Parab
-**Email**: parab.ak@northeastern.edu
+**Name**: Akshay Parab \
+**Email**: parab.ak@northeastern.edu \
 **NEUID**: 002766150
 
-This README provides step-by-step instructions for cloning, setting up, running & testing this webapp application,
+This README provides step-by-step instructions for cloning, setting up, running & testing this webapp application!
 
 ## Prerequisites
 Before you begin, make sure you have the following installed:
