@@ -22,12 +22,14 @@ const verifyUserId = (id, userInfo) => {
     return (parseInt(id) === userInfo.id);
 }
 
-const verifyProductOwner = async (id, userInfo, res) => {
+const verifyProductOwner = async (id, userInfo) => {
     const productInfo = await ProductModel.findOne(id);
     if(isEmpty(productInfo)) {
-        return sendResponse(res, 'NOT FOUND', 404);
+        return { verified: false, msg: 'NOT FOUND', code: 404 }
     };
-    return (productInfo.owner_user_id === userInfo.id);
+    const verified = productInfo.owner_user_id === userInfo.id ? true : false;
+    if(!verified) return { verified: false, msg: 'FORBIDDEN', code: 403 }
+    return { verified };
 }
 
 const basicAuth = async (req, res, next) => {
@@ -58,7 +60,8 @@ const userAuth = async (req, res, next) => {
 const productAuth = async (req, res, next) => {
     const productId = req.params && req.params.productId;
     if(isEmpty(productId)) return sendResponse(res, 'UNAUTHORIZED', 401);
-    if(!(await verifyProductOwner(parseInt(productId), req.userInfo, res))) return sendResponse(res, 'FORBIDDEN', 403);
+    const {verified, msg, code} = await verifyProductOwner(parseInt(productId), req.userInfo);
+    if(!verified) return sendResponse(res, msg, code);
     return next();
 }
 

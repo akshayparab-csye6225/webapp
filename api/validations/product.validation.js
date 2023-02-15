@@ -6,7 +6,7 @@ const create = {
 		description: Joi.string().required(),
 		sku: Joi.string().required(),
         manufacturer: Joi.string().required(),
-        quantity: Joi.number().integer().min(1).max(100).required(),
+        quantity: Joi.number().integer().min(0).max(100).required(),
 	}),
 }
 
