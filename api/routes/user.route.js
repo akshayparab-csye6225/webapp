@@ -7,7 +7,7 @@ import userController from '../controllers/user.controller.js';
 import middleware from '../middlewares/auth.middleware.js';
 
 const router = express.Router();
-const path = '/v1/user';
+const path = '/v6/user';
 
 router.route('')
   .post(logEntryPoint, requestValidatorMiddleware(userValidations.create), userController.create);
